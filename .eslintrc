@@ -1,0 +1,23 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": "plugin:@typescript-eslint/recommended",
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": ["error", "never"],
+    "@typescript-eslint/explicit-function-return-type": ["error"],
+    "@typescript-eslint/explicit-member-accessibility": ["error"],
+    "@typescript-eslint/member-delimiter-style": ["error", 2],
+    "@typescript-eslint/indent": ["off", 2],
+    "indent": ["off", 2],
+    "brace-style": ["warn"],
+    "comma-dangle": ["warn", "never"]
+  }
+}

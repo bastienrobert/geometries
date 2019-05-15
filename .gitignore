@@ -1,0 +1,11 @@
+# Modules
+/node_modules
+
+# Useless things
+.DS_Store
+*.log
+.cache
+
+# Dev cache and build
+/.rpt2_cache
+/dist
