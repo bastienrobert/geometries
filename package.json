@@ -1,6 +1,6 @@
 {
   "name": "geometries",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "description": "primitives - simple geometric shapes",
   "author": "Bastien Robert",
   "license": "MIT",
