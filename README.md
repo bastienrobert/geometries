@@ -1,6 +1,6 @@
 # ◼ Geometries
 
-Simple geometric objects. [Definition](https://en.wikipedia.org/wiki/Geometric_primitive).
+Primitives. [Definition](https://en.wikipedia.org/wiki/Geometric_primitive) - [Examples](https://bastienrobert.github.io/geometries/examples/)
 
 [![NPM](https://nodei.co/npm/geometries.png?downloadRank=true&stars=true)](https://nodei.co/npm/geometries/)
 
