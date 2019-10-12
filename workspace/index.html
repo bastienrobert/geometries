@@ -1,15 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="ie=edge" http-equiv="X-UA-Compatible" />
     <title>PRIMITIVES - Developer workspace</title>
-    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <canvas id="canvas"></canvas>
 
-    <script src="index.js"></script>
+    <script id="vertex-shader" type="shader/vertex">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      attribute vec3 position;
+      attribute vec3 normal;
+      uniform mat4 u_world;
+      uniform mat4 u_view;
+      uniform mat4 u_projection;
+      varying vec3 vPosition;
+      varying vec3 vNormal;
+
+      void main() {
+        vNormal = normal;
+        vPosition = position;
+
+        gl_Position = u_projection * u_view * u_world * vec4(position, 1.);
+      }
+    </script>
+    <script id="fragment-shader" type="shader/fragment">
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+
+      void main() {
+        vec3 color = (vNormal * vPosition + 1.) * .5;
+        gl_FragColor = vec4(color, 1.);
+      }
+    </script>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>

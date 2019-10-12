@@ -1,6 +1,6 @@
 {
   "name": "geometries",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "primitives - simple geometric shapes",
   "author": "Bastien Robert",
   "license": "MIT",
@@ -11,39 +11,26 @@
   "module": "dist/index.mjs",
   "browser": "dist/browser.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "scripts": {
     "dev": "run-p dev:**",
-    "dev:rollup": "rollup -c -w",
-    "dev:workspace": "parcel workspace/index.html -d dist/workspace",
-    "build": "run-p build:**",
-    "build:rollup": "rollup -c",
-    "build:workspace": "parcel build workspace/index.html -d dist/workspace --public-url /geometries",
+    "dev:rollup": "rollup -cw",
+    "dev:serve": "serve",
+    "build": "rollup -c",
     "deploy": "gh-pages -d dist/workspace",
     "lint": "eslint 'src/**/*.ts'"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/plugin-syntax-async-generators": "^7.2.0",
-    "@types/gl-matrix": "^2.4.5",
-    "@typescript-eslint/eslint-plugin": "^1.6.0",
-    "@typescript-eslint/parser": "^1.6.0",
-    "eslint": "^5.16.0",
-    "gh-pages": "^2.0.1",
-    "gl-matrix": "^3.0.0",
-    "glslify-bundle": "^5.1.1",
-    "glslify-deps": "^1.3.1",
-    "npm-run-all": "^4.1.5",
-    "parcel": "^1.12.3",
+    "@typescript-eslint/eslint-plugin": "^1.8.0",
+    "@typescript-eslint/parser": "^1.8.0",
+    "eslint": "^5.12.1",
     "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-eslint": "^5.1.0",
     "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript2": "^0.21.0",
-    "rollup-plugin-uglify": "^6.0.2",
-    "typescript": "^3.4.3"
+    "typedoc": "^0.14.2",
+    "typescript": "3.5.1",
+    "yarn-run-all": "3.1.1"
   }
 }

@@ -1,14 +1,9 @@
 import typescript from 'rollup-plugin-typescript2'
-import { uglify } from 'rollup-plugin-uglify'
-import { eslint } from 'rollup-plugin-eslint'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
-import pkg from './package.json'
+import { terser } from 'rollup-plugin-terser'
 
-const external = ['gl-matrix']
-const lintOptions = {
-  throwOnError: true
-}
+import pkg from './package.json'
 
 export default [
   {
@@ -17,30 +12,16 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
-    plugins: [
-      eslint(lintOptions),
-      typescript({ exclude: ['node_modules/**'] })
-    ],
-    external
+    plugins: [typescript()]
   },
   {
     input: 'src/index.ts',
-    output: {
-      file: pkg.browser,
-      name: '{{moduleName}}',
-      format: 'umd',
-      globals: { 'gl-matrix': 'glMatrix' }
-    },
+    output: { file: pkg.browser, name: 'Geometries', format: 'umd' },
     plugins: [
-      eslint(lintOptions),
-      typescript({
-        useTsconfigDeclarationDir: true,
-        exclude: ['node_modules/**']
-      }),
-      resolve(),
+      resolve({ extensions: ['.ts'] }),
+      typescript(),
       commonjs(),
-      uglify()
-    ],
-    external
+      terser()
+    ]
   }
 ]

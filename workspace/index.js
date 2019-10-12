@@ -1,8 +1,11 @@
-import { vec2, mat4 } from 'gl-matrix'
-import { Box as BoxGeometry } from '../dist'
+import { vec2, mat4 } from 'https://cdn.pika.dev/gl-matrix/v3'
+import { Box as BoxGeometry } from '../dist/index.mjs'
 
-import vertexSource from './shader.vert'
-import fragmentSource from './shader.frag'
+const vertexSource = document.getElementById('vertex-shader').textContent
+const fragmentSource = document.getElementById('fragment-shader').textContent
+
+// import vertexSource from './shader.vert'
+// import fragmentSource from './shader.frag'
 
 class App {
   constructor() {
@@ -12,16 +15,6 @@ class App {
       this.canvas.getContext('experimental-webgl')
 
     this.gl ? this.init() : console.log("WebGL isn't supported")
-  }
-
-  componentWillUnmount() {
-    this.unlisten()
-    window.cancelAnimationFrame(this.raf)
-    try {
-      document.body.removeChild(this.canvas)
-    } catch (e) {
-      console.log(e)
-    }
   }
 
   init() {
@@ -48,7 +41,6 @@ class App {
 
     // Create box
     this.box = new BoxGeometry()
-    console.log(this.box)
     this.createBox()
 
     // Create uniforms
@@ -155,14 +147,14 @@ class App {
   }
 
   createBox() {
-    const { vertices, indices, normals } = this.box
+    const { vertices, index, normals } = this.box
 
-    // Create indices buffer, bind it and add datas
-    const indicesBuffer = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicesBuffer)
+    // Create index buffer, bind it and add datas
+    const indexBuffer = this.gl.createBuffer()
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
     this.gl.bufferData(
       this.gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices),
+      new Uint16Array(index),
       this.gl.STATIC_DRAW
     )
 
@@ -298,7 +290,7 @@ class App {
   }
 
   render = () => {
-    this.raf = window.requestAnimationFrame(this.render)
+    window.requestAnimationFrame(this.render)
 
     if (!this.mouse) {
       this.angle.x += 0.01
@@ -319,7 +311,7 @@ class App {
 
     this.gl.drawElements(
       this.gl.TRIANGLES, // Type to draw
-      this.box.indices.length,
+      this.box.index.length,
       this.gl.UNSIGNED_SHORT,
       0
     )

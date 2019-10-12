@@ -1,13 +1,22 @@
-import Geometry from './Geometry'
+import { Geometry } from '~/@types/index'
 
-export interface Options {
+export interface PlaneOptions {
   width?: number
   height?: number
   widthSegments?: number
   heightSegments?: number
 }
 
-export default class Plane extends Geometry {
+export interface PlaneComputeOptions {
+  [key: string]: number[]
+}
+
+export default class Plane implements Geometry {
+  public vertices: number[]
+  public index: number[]
+  public normals: number[]
+  public uvs: number[]
+
   public width: number
   public height: number
   public widthSegments: number
@@ -18,19 +27,22 @@ export default class Plane extends Geometry {
     height = 1,
     widthSegments = 1,
     heightSegments = 1
-  }: Options = {}) {
-    super()
-
+  }: PlaneOptions = {}) {
     this.width = width
     this.height = height
     this.widthSegments = Math.floor(widthSegments)
     this.heightSegments = Math.floor(heightSegments)
 
+    this.vertices = []
+    this.uvs = []
+    this.normals = []
+    this.index = []
+
     this.generate()
   }
 
   public generate(): void {
-    const { vertices, normals, textures, indices } = Plane.compute(
+    const { vertices, index, normals, uvs } = Plane.compute(
       'x',
       'y',
       'z',
@@ -44,9 +56,9 @@ export default class Plane extends Geometry {
     )
 
     this.vertices = vertices
+    this.index = index
     this.normals = normals
-    this.textures = textures
-    this.indices = indices
+    this.uvs = uvs
   }
 
   public static compute(
@@ -60,12 +72,12 @@ export default class Plane extends Geometry {
     depth: number,
     gridX: number,
     gridY: number,
-    firstIndice: number = 0
-  ): { [key: string]: number[] } {
+    firstIndex: number = 0
+  ): PlaneComputeOptions {
     let vertices: number[] = []
+    let index: number[] = []
     let normals: number[] = []
-    let textures: number[] = []
-    let indices: number[] = []
+    let uvs: number[] = []
 
     const segmentWidth: number = width / gridX
     const segmentHeight: number = height / gridY
@@ -88,28 +100,28 @@ export default class Plane extends Geometry {
         vec3[w] = depth > 0 ? 1 : -1
         normals.push(vec3.x, vec3.y, vec3.z)
 
-        textures.push(j / gridX)
-        textures.push(1 - i / gridY)
+        uvs.push(j / gridX)
+        uvs.push(1 - i / gridY)
       }
     }
 
     for (let i = 0; i < gridY; i++) {
       for (let j = 0; j < gridX; j++) {
-        const a: number = firstIndice + j + (gridX + 1) * i
-        const b: number = firstIndice + j + (gridX + 1) * (i + 1)
-        const c: number = firstIndice + j + 1 + (gridX + 1) * (i + 1)
-        const d: number = firstIndice + j + 1 + (gridX + 1) * i
+        const a: number = firstIndex + j + (gridX + 1) * i
+        const b: number = firstIndex + j + (gridX + 1) * (i + 1)
+        const c: number = firstIndex + j + 1 + (gridX + 1) * (i + 1)
+        const d: number = firstIndex + j + 1 + (gridX + 1) * i
 
-        indices.push(a, b, d)
-        indices.push(b, c, d)
+        index.push(a, b, d)
+        index.push(b, c, d)
       }
     }
 
     return {
       vertices,
       normals,
-      textures,
-      indices
+      uvs,
+      index
     }
   }
 }

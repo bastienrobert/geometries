@@ -1,12 +1,17 @@
-import Geometry from './Geometry'
+import { Geometry } from '~/@types/index'
 
-export interface Options {
+export interface SphereOptions {
   radius?: number
   widthSegments?: number
   heightSegments?: number
 }
 
-export default class SphereGeometry extends Geometry {
+export default class SphereGeometry implements Geometry {
+  public vertices: number[]
+  public index: number[]
+  public normals: number[]
+  public uvs: number[]
+
   public widthSegments: number
   public heightSegments: number
   public radius: number
@@ -15,12 +20,15 @@ export default class SphereGeometry extends Geometry {
     radius = 1,
     widthSegments = 10,
     heightSegments = 10
-  }: Options = {}) {
-    super()
-
-    this.widthSegments = widthSegments
-    this.heightSegments = heightSegments
+  }: SphereOptions = {}) {
+    this.widthSegments = Math.floor(widthSegments)
+    this.heightSegments = Math.floor(heightSegments)
     this.radius = radius
+
+    this.vertices = []
+    this.index = []
+    this.normals = []
+    this.uvs = []
 
     this.generate()
   }
@@ -42,9 +50,9 @@ export default class SphereGeometry extends Geometry {
         const u: number = 1 - height / this.heightSegments
         const v: number = 1 - width / this.widthSegments
 
-        this.normals.push(x, y, z)
-        this.textures.push(u, v)
         this.vertices.push(this.radius * x, this.radius * y, this.radius * z)
+        this.normals.push(x, y, z)
+        this.uvs.push(u, v)
       }
     }
 
@@ -52,14 +60,7 @@ export default class SphereGeometry extends Geometry {
       for (let height = 0; height < this.heightSegments; height++) {
         const first: number = width * (this.heightSegments + 1) + height
         const second: number = first + this.heightSegments + 1
-        this.indices.push(
-          second,
-          first,
-          first + 1,
-          second + 1,
-          second,
-          first + 1
-        )
+        this.index.push(second, first, first + 1, second + 1, second, first + 1)
       }
     }
   }

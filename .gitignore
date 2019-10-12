@@ -1,5 +1,5 @@
 # Modules
-/node_modules
+node_modules
 
 # Useless things
 .DS_Store
@@ -7,5 +7,4 @@
 .cache
 
 # Dev cache and build
-/.rpt2_cache
-/dist
+.rpt2_cache
