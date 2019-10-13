@@ -1,6 +1,6 @@
 export interface Geometry {
   vertices: number[]
-  index: number[]
+  indices: number[]
   normals: number[]
   uvs: number[]
   generate(): void

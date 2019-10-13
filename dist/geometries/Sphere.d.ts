@@ -6,7 +6,7 @@ export interface SphereOptions {
 }
 export default class SphereGeometry implements Geometry {
     vertices: number[];
-    index: number[];
+    indices: number[];
     normals: number[];
     uvs: number[];
     widthSegments: number;

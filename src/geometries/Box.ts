@@ -17,7 +17,7 @@ interface Face {
 
 export default class BoxGeometry implements Geometry {
   public vertices: number[]
-  public index: number[]
+  public indices: number[]
   public normals: number[]
   public uvs: number[]
 
@@ -46,7 +46,7 @@ export default class BoxGeometry implements Geometry {
 
     this.faces = {}
     this.vertices = []
-    this.index = []
+    this.indices = []
     this.normals = []
     this.uvs = []
 
@@ -71,10 +71,10 @@ export default class BoxGeometry implements Geometry {
 
     for (let key in this.faces) {
       const face: Face = this.faces[key]
-      const { vertices, index, normals, uvs } = face
+      const { vertices, indices, normals, uvs } = face
 
       this.vertices = this.vertices.concat(vertices)
-      this.index = this.index.concat(index)
+      this.indices = this.indices.concat(indices)
       this.normals = this.normals.concat(normals)
       this.uvs = this.uvs.concat(uvs)
     }

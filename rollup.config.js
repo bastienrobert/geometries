@@ -2,6 +2,7 @@ import typescript from 'rollup-plugin-typescript2'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
+import bundleSize from 'rollup-plugin-bundle-size'
 
 import pkg from './package.json'
 
@@ -12,7 +13,7 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
-    plugins: [typescript()]
+    plugins: [typescript(), bundleSize()]
   },
   {
     input: 'src/index.ts',
@@ -21,7 +22,8 @@ export default [
       resolve({ extensions: ['.ts'] }),
       typescript(),
       commonjs(),
-      terser()
+      terser(),
+      bundleSize()
     ]
   }
 ]

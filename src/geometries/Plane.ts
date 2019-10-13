@@ -13,7 +13,7 @@ export interface PlaneComputeOptions {
 
 export default class Plane implements Geometry {
   public vertices: number[]
-  public index: number[]
+  public indices: number[]
   public normals: number[]
   public uvs: number[]
 
@@ -36,13 +36,13 @@ export default class Plane implements Geometry {
     this.vertices = []
     this.uvs = []
     this.normals = []
-    this.index = []
+    this.indices = []
 
     this.generate()
   }
 
   public generate(): void {
-    const { vertices, index, normals, uvs } = Plane.compute(
+    const { vertices, indices, normals, uvs } = Plane.compute(
       'x',
       'y',
       'z',
@@ -56,7 +56,7 @@ export default class Plane implements Geometry {
     )
 
     this.vertices = vertices
-    this.index = index
+    this.indices = indices
     this.normals = normals
     this.uvs = uvs
   }
@@ -72,10 +72,10 @@ export default class Plane implements Geometry {
     depth: number,
     gridX: number,
     gridY: number,
-    firstIndex: number = 0
+    firstIndice: number = 0
   ): PlaneComputeOptions {
     let vertices: number[] = []
-    let index: number[] = []
+    let indices: number[] = []
     let normals: number[] = []
     let uvs: number[] = []
 
@@ -84,10 +84,10 @@ export default class Plane implements Geometry {
 
     let vec3: { [index: string]: number } = {}
 
-    for (let i = 0; i <= gridY; i++) {
+    for (let i = 0; i <= gridY; ++i) {
       const y: number = i * segmentHeight - height / 2
 
-      for (let j = 0; j <= gridX; j++) {
+      for (let j = 0; j <= gridX; ++j) {
         const x: number = j * segmentWidth - width / 2
 
         vec3[u] = x * udir
@@ -105,15 +105,15 @@ export default class Plane implements Geometry {
       }
     }
 
-    for (let i = 0; i < gridY; i++) {
-      for (let j = 0; j < gridX; j++) {
-        const a: number = firstIndex + j + (gridX + 1) * i
-        const b: number = firstIndex + j + (gridX + 1) * (i + 1)
-        const c: number = firstIndex + j + 1 + (gridX + 1) * (i + 1)
-        const d: number = firstIndex + j + 1 + (gridX + 1) * i
+    for (let i = 0; i < gridY; ++i) {
+      for (let j = 0; j < gridX; ++j) {
+        const a: number = firstIndice + j + (gridX + 1) * i
+        const b: number = firstIndice + j + (gridX + 1) * (i + 1)
+        const c: number = firstIndice + j + 1 + (gridX + 1) * (i + 1)
+        const d: number = firstIndice + j + 1 + (gridX + 1) * i
 
-        index.push(a, b, d)
-        index.push(b, c, d)
+        indices.push(a, b, d)
+        indices.push(b, c, d)
       }
     }
 
@@ -121,7 +121,7 @@ export default class Plane implements Geometry {
       vertices,
       normals,
       uvs,
-      index
+      indices
     }
   }
 }

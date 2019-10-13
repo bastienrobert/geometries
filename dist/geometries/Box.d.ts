@@ -12,7 +12,7 @@ interface Face {
 }
 export default class BoxGeometry implements Geometry {
     vertices: number[];
-    index: number[];
+    indices: number[];
     normals: number[];
     uvs: number[];
     width: number;

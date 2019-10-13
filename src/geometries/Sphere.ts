@@ -8,7 +8,7 @@ export interface SphereOptions {
 
 export default class SphereGeometry implements Geometry {
   public vertices: number[]
-  public index: number[]
+  public indices: number[]
   public normals: number[]
   public uvs: number[]
 
@@ -26,7 +26,7 @@ export default class SphereGeometry implements Geometry {
     this.radius = radius
 
     this.vertices = []
-    this.index = []
+    this.indices = []
     this.normals = []
     this.uvs = []
 
@@ -34,12 +34,12 @@ export default class SphereGeometry implements Geometry {
   }
 
   public generate(): void {
-    for (let width = 0; width <= this.widthSegments; width++) {
+    for (let width = 0; width <= this.widthSegments; ++width) {
       const theta: number = (width * Math.PI) / this.widthSegments
       const sinTheta: number = Math.sin(theta)
       const cosTheta: number = Math.cos(theta)
 
-      for (let height = 0; height <= this.heightSegments; height++) {
+      for (let height = 0; height <= this.heightSegments; ++height) {
         const phi: number = (height * 2 * Math.PI) / this.heightSegments
         const sinPhi: number = Math.sin(phi)
         const cosPhi: number = Math.cos(phi)
@@ -56,11 +56,18 @@ export default class SphereGeometry implements Geometry {
       }
     }
 
-    for (let width = 0; width < this.widthSegments; width++) {
-      for (let height = 0; height < this.heightSegments; height++) {
+    for (let width = 0; width < this.widthSegments; ++width) {
+      for (let height = 0; height < this.heightSegments; ++height) {
         const first: number = width * (this.heightSegments + 1) + height
         const second: number = first + this.heightSegments + 1
-        this.index.push(second, first, first + 1, second + 1, second, first + 1)
+        this.indices.push(
+          second,
+          first,
+          first + 1,
+          second + 1,
+          second,
+          first + 1
+        )
       }
     }
   }

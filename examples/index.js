@@ -1,11 +1,8 @@
 import { vec2, mat4 } from 'https://cdn.pika.dev/gl-matrix/v3'
-import { Box as BoxGeometry } from '../dist/index.mjs'
+import { Torrus as TorrusGeometry } from '../dist/index.mjs'
 
 const vertexSource = document.getElementById('vertex-shader').textContent
 const fragmentSource = document.getElementById('fragment-shader').textContent
-
-// import vertexSource from './shader.vert'
-// import fragmentSource from './shader.frag'
 
 class App {
   constructor() {
@@ -39,9 +36,10 @@ class App {
     // Tell webGL the current program
     this.gl.useProgram(this.program)
 
-    // Create box
-    this.box = new BoxGeometry()
-    this.createBox()
+    // Create geometry
+    this.geometry = new TorrusGeometry()
+    console.log(this.geometry)
+    this.createGeometry()
 
     // Create uniforms
     this.createUniforms()
@@ -146,15 +144,15 @@ class App {
     return program
   }
 
-  createBox() {
-    const { vertices, index, normals } = this.box
+  createGeometry() {
+    const { vertices, indices, normals } = this.geometry
 
-    // Create index buffer, bind it and add datas
-    const indexBuffer = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    // Create indices buffer, bind it and add datas
+    const indicesBuffer = this.gl.createBuffer()
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicesBuffer)
     this.gl.bufferData(
       this.gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(index),
+      new Uint16Array(indices),
       this.gl.STATIC_DRAW
     )
 
@@ -311,7 +309,7 @@ class App {
 
     this.gl.drawElements(
       this.gl.TRIANGLES, // Type to draw
-      this.box.index.length,
+      this.geometry.indices.length,
       this.gl.UNSIGNED_SHORT,
       0
     )

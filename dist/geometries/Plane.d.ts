@@ -10,7 +10,7 @@ export interface PlaneComputeOptions {
 }
 export default class Plane implements Geometry {
     vertices: number[];
-    index: number[];
+    indices: number[];
     normals: number[];
     uvs: number[];
     width: number;
@@ -19,5 +19,5 @@ export default class Plane implements Geometry {
     heightSegments: number;
     constructor({ width, height, widthSegments, heightSegments }?: PlaneOptions);
     generate(): void;
-    static compute(u: string, v: string, w: string, udir: number, vdir: number, width: number, height: number, depth: number, gridX: number, gridY: number, firstIndex?: number): PlaneComputeOptions;
+    static compute(u: string, v: string, w: string, udir: number, vdir: number, width: number, height: number, depth: number, gridX: number, gridY: number, firstIndice?: number): PlaneComputeOptions;
 }
