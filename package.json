@@ -16,7 +16,6 @@
     "dev:rollup": "rollup -cw",
     "dev:serve": "serve",
     "build": "rollup -c",
-    "deploy": "gh-pages -d dist/workspace",
     "lint": "eslint 'src/**/*.ts'"
   },
   "devDependencies": {
@@ -31,6 +30,7 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript2": "^0.21.0",
+    "serve": "^11.2.0",
     "typedoc": "^0.14.2",
     "typescript": "3.5.1"
   }

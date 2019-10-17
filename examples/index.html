@@ -9,6 +9,12 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <div id="scroll-zone">
+      <geometry-card geometry="cylinder" label="Cylinder"></geometry-card>
+      <geometry-card geometry="box" label="Box"></geometry-card>
+      <geometry-card geometry="sphere" label="Sphere"></geometry-card>
+      <geometry-card geometry="plane" label="Plane"></geometry-card>
+    </div>
 
     <script id="vertex-shader" type="shader/vertex">
       #ifdef GL_ES
@@ -44,6 +50,6 @@
       }
     </script>
 
-    <script src="index.js" type="module"></script>
+    <script src="src/index.js" type="module"></script>
   </body>
 </html>

@@ -1,15 +1,21 @@
 import { vec2, mat4 } from 'https://cdn.pika.dev/gl-matrix/v3'
-import { Torrus as TorrusGeometry } from '../dist/index.mjs'
+import { Torrus as TorrusGeometry } from '../../dist/index.mjs'
 
 const vertexSource = document.getElementById('vertex-shader').textContent
 const fragmentSource = document.getElementById('fragment-shader').textContent
 
-class App {
+export default class Geometries {
   constructor() {
     this.canvas = document.getElementById('canvas')
     this.gl =
       this.canvas.getContext('webgl') ||
       this.canvas.getContext('experimental-webgl')
+
+    this.onMouseDown = this.onMouseDown.bind(this)
+    this.onMouseMove = this.onMouseMove.bind(this)
+    this.onMouseUp = this.onMouseUp.bind(this)
+    this.onResize = this.onResize.bind(this)
+    this.render = this.render.bind(this)
 
     this.gl ? this.init() : console.log("WebGL isn't supported")
   }
@@ -18,12 +24,14 @@ class App {
     // Listen events
     this.listen()
 
-    // Define default size
-    this.canvas.width = 512
-    this.canvas.height = 512
-    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
-
     this.gl.enable(this.gl.DEPTH_TEST) // Enable depth feature
+    this.gl.enable(this.gl.SCISSOR_TEST) // Enable scissor feature
+
+    // Enable scissor
+    const geometryCard = document.getElementsByClassName('js-geometry')[0]
+    const geometryCardGL = geometryCard.getElementsByClassName('js-gl')[0]
+    const geometryCardGLBoundingRect = geometryCardGL.getBoundingClientRect()
+    this.setScissor(geometryCardGLBoundingRect)
 
     // Call instance method to create shaders
     this.shaders = this.createShaders()
@@ -38,7 +46,6 @@ class App {
 
     // Create geometry
     this.geometry = new TorrusGeometry()
-    console.log(this.geometry)
     this.createGeometry()
 
     // Create uniforms
@@ -58,6 +65,7 @@ class App {
   }
 
   listen() {
+    this.onResize()
     this.mouse = null
     this.canvas.addEventListener('mousedown', this.onMouseDown)
     this.canvas.addEventListener('touchstart', this.onMouseDown)
@@ -67,6 +75,7 @@ class App {
     window.addEventListener('touchleave', this.onMouseUp)
     window.addEventListener('touchcancel', this.onMouseUp)
     window.addEventListener('mouseup', this.onMouseUp)
+    window.addEventListener('resize', this.onResize)
   }
 
   unlisten() {
@@ -78,6 +87,7 @@ class App {
     window.removeEventListener('touchleave', this.onMouseUp)
     window.removeEventListener('touchcancel', this.onMouseUp)
     window.removeEventListener('mouseup', this.onMouseUp)
+    window.removeEventListener('resize', this.onResize)
   }
 
   createShaders() {
@@ -233,7 +243,7 @@ class App {
     mat4.perspective(
       this.projectionMatrix,
       Math.PI / 4, // Vertical field of view in radians: 45deg
-      this.canvas.width / this.canvas.height, // Aspect ratio
+      this.scissor.width / this.scissor.height, // Aspect ratio
       0.1, // Near
       1000 // Far
     )
@@ -256,13 +266,28 @@ class App {
     )
   }
 
-  onMouseDown = e => {
+  setScissor(bcr) {
+    this.scissor = {
+      top: this.viewport.height - bcr.height,
+      left: bcr.left,
+      width: bcr.width,
+      height: bcr.height
+    }
+    this.gl.scissor(
+      this.scissor.left,
+      this.scissor.top,
+      this.scissor.width,
+      this.scissor.height
+    )
+  }
+
+  onMouseDown(e) {
     e = e.touches ? e.touches[0] : e
     this.mouse = vec2.fromValues(e.clientX, e.clientY)
     this.previousAngle = { ...this.angle }
   }
 
-  onMouseMove = e => {
+  onMouseMove(e) {
     if (!this.mouse) return
     e = e.touches ? e.touches[0] : e
 
@@ -283,11 +308,21 @@ class App {
     )
   }
 
-  onMouseUp = () => {
+  onMouseUp() {
     this.mouse = null
   }
 
-  render = () => {
+  onResize() {
+    this.viewport = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+
+    this.canvas.width = this.viewport.width
+    this.canvas.height = this.viewport.height
+  }
+
+  render() {
     window.requestAnimationFrame(this.render)
 
     if (!this.mouse) {
@@ -303,6 +338,14 @@ class App {
       )
     }
 
+    // draw at scissor
+    this.gl.viewport(
+      this.scissor.left,
+      this.scissor.top,
+      this.scissor.width,
+      this.scissor.height
+    )
+
     // This is clearring the background color and reset the COLOR BUFFER BIT
     this.gl.clearColor(0.2, 0.2, 0.2, 1)
     this.gl.clear(this.gl.COLOR_BUFFER_BIT)
@@ -315,5 +358,3 @@ class App {
     )
   }
 }
-
-new App()
