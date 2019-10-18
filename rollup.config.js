@@ -6,6 +6,8 @@ import bundleSize from 'rollup-plugin-bundle-size'
 
 import pkg from './package.json'
 
+const production = !process.env.ROLLUP_WATCH
+
 export default [
   {
     input: 'src/index.ts',
@@ -13,7 +15,7 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
-    plugins: [typescript(), bundleSize()]
+    plugins: [typescript(), production && bundleSize()]
   },
   {
     input: 'src/index.ts',
@@ -23,7 +25,7 @@ export default [
       typescript(),
       commonjs(),
       terser(),
-      bundleSize()
+      production && bundleSize()
     ]
   }
 ]

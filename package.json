@@ -28,9 +28,9 @@
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-eslint": "^5.1.0",
     "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript2": "^0.21.0",
-    "serve": "^11.2.0",
     "typedoc": "^0.14.2",
     "typescript": "3.5.1"
   }

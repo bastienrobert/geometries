@@ -26,18 +26,26 @@ export default class VirtualScroll {
       deltaY: 0
     }
     this._mouseDown = [0, 0]
+    this._prevent = false
+    this._meta = false
 
     this._listeners = []
     this._bind()
     this.listen()
   }
 
+  _setPrevent(val) {
+    this._prevent = val
+  }
+
   _bind() {
+    this._setPrevent = this._setPrevent.bind(this)
     this._onWheel = this._onWheel.bind(this)
     this._onMouseWheel = this._onMouseWheel.bind(this)
     this._onTouchStart = this._onTouchStart.bind(this)
     this._onTouchMove = this._onTouchMove.bind(this)
     this._onKeyDown = this._onKeyDown.bind(this)
+    this._onKeyUp = this._onKeyUp.bind(this)
   }
 
   listen() {
@@ -46,19 +54,22 @@ export default class VirtualScroll {
     if (support.hasMouseWheelEvent) this._addEventListener('mousewheel', this._onMouseWheel) // prettier-ignore
 
     if (support.hasTouch) {
-      this._addEventListener('touchstart', this._onTouchStart)
-      this._addEventListener('touchmove', this._onTouchMove)
+      this._addEventListener('touchstart', this._onTouchStart, { passive: true }) // prettier-ignore
+      this._addEventListener('touchmove', this._onTouchMove, { passive: true })
     }
 
     if (support.hasKeyDown) {
       this._addEventListener('keydown', this._onKeyDown, { target: document }) // prettier-ignore
+      this._addEventListener('keyup', this._onKeyUp, { target: document }) // prettier-ignore
     }
+
+    Emitter.on('virtualscroll:prevent', this._setPrevent)
   }
 
-  _addEventListener(event, fn, options = {}) {
-    if (!options.target) options.target = window
+  _addEventListener(event, fn, { target, ...options } = {}) {
+    if (!target) target = window
     this._listeners.push({ event, fn, options })
-    options.target.addEventListener(event, fn)
+    target.addEventListener(event, fn, options)
   }
 
   unlisten() {
@@ -69,6 +80,7 @@ export default class VirtualScroll {
   }
 
   _emit(e) {
+    if (this._prevent) return
     Emitter.emit('scroll', e)
   }
 
@@ -104,27 +116,32 @@ export default class VirtualScroll {
 
     this._mouseDown = [t.pageX, t.pageY]
 
-    this._emit(e)
+    this._emit(evt)
   }
 
-  // TODO: add cmd+top and cmd+bottom to get up/down
   _onKeyDown(e) {
     const evt = this._event
     evt.deltaX = evt.deltaY = 0
 
+    if (e.key === 'Meta' || e.key === 'Control') this._meta = true
+
     switch (e.key) {
-      case 'left':
-      case 'up':
-        evt.deltaY = KEYSTEP
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        evt.deltaY = this._meta ? window.innerHeight : KEYSTEP
         break
-      case 'right':
-      case 'down':
-        evt.deltaY = -KEYSTEP
+      case 'ArrowRight':
+      case 'ArrowDown':
+        evt.deltaY = this._meta ? -window.innerHeight : -KEYSTEP
         break
       default:
         return
     }
 
-    this._emit(e)
+    this._emit(evt)
+  }
+
+  _onKeyUp(e) {
+    if (e.key === 'Meta' || e.key === 'Control') this._meta = false
   }
 }

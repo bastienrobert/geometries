@@ -8,16 +8,22 @@ template.innerHTML = `
 <style>
   :host {
     display: inline-block;
+    max-width: 100%;
+    padding: 1em;
+    box-sizing: border-box;
   }
   .card {
     display: inline-block;
-    margin: 1em;
+    width: 400px;
+    max-width: 100%;
     padding: 1em;
     box-shadow: 1px 2px 4px 0px rgba(0,0,0,0.25);
+    box-sizing: border-box;
   }
   .gl {
-    width: 400px;
-    height: 400px;
+    width: 100%;
+    padding-bottom: 100%;
+    border: 1px solid #dcdcdc;
   }
   .informations {
     color: #888;
@@ -58,8 +64,8 @@ export default class GeometryCard extends HTMLElement {
     const geometry = this.getAttribute('geometry')
     if (geometry) {
       Emitter.on('resize', this._onResize)
-      this.$gl.addEventListener('mousedown', this._onMouseDown)
-      this.$gl.addEventListener('touchstart', this._onMouseDown)
+      this.$gl.addEventListener('mousedown', this._onMouseDown, { passive: true }) // prettier-ignore
+      this.$gl.addEventListener('touchstart', this._onMouseDown, { passive: true }) // prettier-ignore
       Emitter.on('mousemove', this._onMouseMove)
       Emitter.on('mouseup', this._onMouseUp)
 

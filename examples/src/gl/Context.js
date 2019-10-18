@@ -2,6 +2,7 @@ import Geometry from './Geometry.js'
 import geometries from './geometries.js'
 
 import Values from '../utils/Values.js'
+import Emitter from '../utils/Emitter.js'
 
 const ORBIT_FACTOR = 6
 
@@ -36,9 +37,8 @@ class Context {
 
   scroll(targetY) {
     for (let id in this._geometries) {
-      Object.assign(this._geometries[id].scissor, {
-        scroll: this._geometries[id].scissor.top - targetY
-      })
+      const scroll = this._geometries[id].scissor.top - targetY
+      this._geometries[id].scissor.scroll = scroll
     }
   }
 
@@ -48,10 +48,12 @@ class Context {
 
   orbit(id, arg) {
     if (arg === true) {
+      Emitter.emit('virtualscroll:prevent', true)
       this._geometries[id].startOrbit()
       return
     }
     if (arg === false) {
+      Emitter.emit('virtualscroll:prevent', false)
       this._geometries[id].stopOrbit()
       return
     }

@@ -205,6 +205,7 @@ export default class Geometry {
   startOrbit() {
     this.orbital = true
     this.previousAngle = this.angle.slice(0)
+    this.deltaAngle = [0, 0, 0]
   }
 
   setOrbit(x, z) {
@@ -235,13 +236,12 @@ export default class Geometry {
 
   draw() {
     this.gl.useProgram(this.program)
+    this.bindAttributes()
+    this.applyRotation()
+
     this.setScissor()
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
     this.gl.clearColor(1, 1, 1, 1)
-
-    this.bindAttributes()
-
-    this.applyRotation()
 
     this.gl.drawElements(
       this.gl.TRIANGLES,
